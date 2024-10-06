@@ -1,0 +1,16 @@
+version: '3.8'
+name: enchanted-village
+
+services:
+  keycloak:
+    image: ila13/enchanted-village-keycloak:latest
+    container_name: ev_keycloak
+    environment:
+      KEYCLOAK_USER: ${KEYCLOAK_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KEYCLOAK_PORT: ${KEYCLOAK_PORT}
+    ports:
+      - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"
+    volumes:
+      - ./keycloak_data_backup:/opt/keycloak/data
+      - ./keycloak_config_backup:/opt/keycloak/conf

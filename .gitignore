@@ -31,3 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
+
+docker-keycloak/keycloak_data_backup/h2/keycloakdb.lock
