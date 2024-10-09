@@ -3,7 +3,7 @@ name: enchanted-village
 
 services:
   keycloak:
-    image: ila13/enchanted-village-keycloak:latest
+    image: ila13/enchanted-village-keycloak:v.2.0
     container_name: ev_keycloak
     environment:
       KEYCLOAK_USER: ${KEYCLOAK_USER}
