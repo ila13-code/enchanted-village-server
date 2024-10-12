@@ -27,4 +27,10 @@ public class UserDTO {
 
     @NotNull(message = "The role cannot be null and void")
     private Role role;
+
+    @NotBlank(message = "The username cannot be empty")
+    @Size(min = 2, max = 50, message = "Username must be between 2 and 50 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Username can only contain letters and numbers")
+    private String username;
+
 }

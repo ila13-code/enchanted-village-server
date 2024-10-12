@@ -30,6 +30,8 @@ public class User {
     @Column
     private Role role;
 
+    @Column
+    private String username;
 
     @Override
     public String toString() {
@@ -38,7 +40,8 @@ public class User {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
-                ", role=" + role +
+                ", role=" + role + '\'' +
+                ", username=" + username +
                 '}';
     }
 

@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import unical.demacs.enchantedvillage.config.handler.exception.TooManyRequestsException;
+import unical.demacs.enchantedvillage.config.handler.exception.UserException;
 import unical.demacs.enchantedvillage.persistence.dto.UserDTO;
 import unical.demacs.enchantedvillage.persistence.entities.User;
 import unical.demacs.enchantedvillage.persistence.repository.UserRepository;
@@ -29,7 +31,7 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional
     @Override
-    public UserDTO createUser(String id, String name, String surname, String email, String role) {
+    public UserDTO createUser(String id, String name, String surname, String email, String role, String username) {
         logger.info("++++++START REQUEST++++++");
         logger.info("Attempting to create user with email: {}", email);
         try {
@@ -38,7 +40,7 @@ public class UserServiceImpl implements IUserService {
                 logger.info("User with id {} already exists", id);
                 return modelMapper.map(user, UserDTO.class);
             } else {
-                user = new User(id, name, surname, email, Role.valueOf(role));
+                user = new User(id, name, surname, email, Role.valueOf(role), username);
                 userRepository.save(user);
                 //emailService.sendEmailRegistration(email, name);
                 logger.info("User created successfully: {}", email);
