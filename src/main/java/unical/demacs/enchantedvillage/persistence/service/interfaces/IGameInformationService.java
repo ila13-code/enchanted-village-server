@@ -1,25 +1,17 @@
 package unical.demacs.enchantedvillage.persistence.service.interfaces;
 
 import jakarta.transaction.Transactional;
+import unical.demacs.enchantedvillage.persistence.dto.GameInformationDTO;
 
-public class IGameInformationService {
+public interface IGameInformationService {
     @Transactional
-    public void createGameInformation(String id, String userEmail, String buildingData, String elixir, String gold, String level) {
-        throw new UnsupportedOperationException();
-    }
-
+    void createGameInformation(String email, GameInformationDTO gameInformationDTO);
     @Transactional
-    public void updateGameInformation(String userEmail, String buildingData, String elixir, String gold, String level) {
-        throw new UnsupportedOperationException();
-    }
+    void updateGameInformation(String userEmail, GameInformationDTO gameInformationDTO);
 
-    public void getGameInformation(String userEmail) {
-        throw new UnsupportedOperationException();
-    }
+    void getGameInformation(String userEmail);
 
     @Transactional
-    public void deleteGameInformation(String userEmail) {
-        throw new UnsupportedOperationException();
-    }
+    void deleteGameInformation(String userEmail);
 
 }
