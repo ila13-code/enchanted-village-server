@@ -18,6 +18,7 @@ import unical.demacs.enchantedvillage.persistence.repository.GameInformationRepo
 import unical.demacs.enchantedvillage.persistence.repository.UserRepository;
 import unical.demacs.enchantedvillage.persistence.service.interfaces.IGameInformationService;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,7 +34,7 @@ public class GameInformationServiceImpl implements IGameInformationService {
 
     @Transactional
     @Override
-    public void createGameInformation(@NotNull String email, GameInformationDTO gameInformationDTO) {
+    public Optional<GameInformation> createGameInformation(@NotNull String email, GameInformationDTO gameInformationDTO) {
         logger.info("++++++START REQUEST createGameInformation++++++");
         logger.info("Creating new gameInformation for user {}", email);
         boolean result = rateLimiter.tryAcquire();
@@ -49,10 +50,8 @@ public class GameInformationServiceImpl implements IGameInformationService {
                         return new NoUserFoundException("User not found." + email);
                     });
 
-            gameInformationRepository.findByUserId(user.getId())
-                    .ifPresentOrElse(gameInformation -> {
-                        logger.info("GameInformation already exists for user {}", email);
-                    }, () -> {
+            return gameInformationRepository.findByUserId(user.getId())
+                    .or(() -> {
                         GameInformation gameInformation = GameInformation.buildGameInformation()
                                 .id(UUID.randomUUID())
                                 .user(user)
@@ -64,10 +63,10 @@ public class GameInformationServiceImpl implements IGameInformationService {
                                 .level(gameInformationDTO.getLevel())
                                 .experience(gameInformationDTO.getExperience())
                                 .build();
-                        gameInformationRepository.save(gameInformation);
+                        GameInformation savedGameInfo = gameInformationRepository.save(gameInformation);
                         logger.info("GameInformation created successfully for user {}", email);
+                        return Optional.of(savedGameInfo);
                     });
-
         } finally {
             logger.info("++++++END REQUEST++++++");
         }
@@ -75,7 +74,7 @@ public class GameInformationServiceImpl implements IGameInformationService {
 
     @Transactional
     @Override
-    public void updateGameInformation(String userEmail, GameInformationDTO gameInformationDTO) {
+    public Optional<GameInformation> updateGameInformation(String userEmail, GameInformationDTO gameInformationDTO) {
         logger.info("++++++START REQUEST updateGameInformation++++++");
         logger.info("Updating gameInformation for user {}", userEmail);
         boolean result = rateLimiter.tryAcquire();
@@ -91,21 +90,18 @@ public class GameInformationServiceImpl implements IGameInformationService {
                         return new NoUserFoundException("User not found." + userEmail);
                     });
 
-            GameInformation gameInformation = gameInformationRepository.findByUserId(user.getId())
-                    .orElseThrow(() -> {
-                        logger.error("GameInformation not found for user {}", userEmail);
-                        return new NoUserFoundException("GameInformation not found." + userEmail);
+            return gameInformationRepository.findByUserId(user.getId())
+                    .map(gameInformation -> {
+                        gameInformation.setBuildingData(gameInformationDTO.getBuildingData());
+                        gameInformation.setElixir(gameInformationDTO.getElixir());
+                        gameInformation.setGold(gameInformationDTO.getGold());
+                        gameInformation.setLevel(gameInformationDTO.getLevel());
+                        gameInformation.setExperience(gameInformationDTO.getExperience());
+                        gameInformation.setLastUpdateDate(LocalDate.now());
+                        GameInformation updatedInfo = gameInformationRepository.save(gameInformation);
+                        logger.info("GameInformation updated successfully for user {}", userEmail);
+                        return updatedInfo;
                     });
-
-            gameInformation.setBuildingData(gameInformationDTO.getBuildingData());
-            gameInformation.setElixir(gameInformationDTO.getElixir());
-            gameInformation.setGold(gameInformationDTO.getGold());
-            gameInformation.setLevel(gameInformationDTO.getLevel());
-            gameInformation.setExperience(gameInformationDTO.getExperience());
-            gameInformation.setLastUpdateDate(LocalDate.now());
-            gameInformationRepository.save(gameInformation);
-            logger.info("GameInformation updated successfully for user {}", userEmail);
-
         } finally {
             logger.info("++++++END REQUEST++++++");
         }
@@ -113,7 +109,7 @@ public class GameInformationServiceImpl implements IGameInformationService {
 
     @Transactional
     @Override
-    public void getGameInformation(String userEmail) {
+    public Optional<GameInformation> getGameInformation(String userEmail) {
         logger.info("++++++START REQUEST getGameInformation++++++");
         logger.info("Get gameInformation for user {}", userEmail);
         boolean result = rateLimiter.tryAcquire();
@@ -137,6 +133,7 @@ public class GameInformationServiceImpl implements IGameInformationService {
 
             logger.info("GameInformation found for user {}", userEmail);
             logger.info(gameInformation.toString());
+            return Optional.of(gameInformation);
 
         } finally {
             logger.info("++++++END REQUEST++++++");
