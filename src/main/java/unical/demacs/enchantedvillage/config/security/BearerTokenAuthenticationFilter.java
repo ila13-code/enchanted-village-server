@@ -20,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
 import java.util.Optional;
+
 @Component
 public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
 
@@ -32,10 +33,10 @@ public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        /*if (isPublicEndpoint(request)) {
+        if (isPublicEndpoint(request)) {
             filterChain.doFilter(request, response);
             return;
-        }*/
+        }
 
         String authorizationHeader = request.getHeader("Authorization");
 
@@ -63,6 +64,9 @@ public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
     }
 
 
-
+    private boolean isPublicEndpoint(HttpServletRequest request) {
+        String requestUri = request.getRequestURI();
+        return SecurityFilterConfig.isPublicEndpoint(requestUri);
+    }
 }
 

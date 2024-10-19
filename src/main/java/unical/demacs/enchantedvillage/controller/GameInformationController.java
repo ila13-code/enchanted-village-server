@@ -18,7 +18,7 @@ import unical.demacs.enchantedvillage.persistence.service.implementation.GameInf
 @RequestMapping(value = "/api/v1/game-information", produces = "application/json")
 @CrossOrigin
 @AllArgsConstructor
-@Tag(name = "game-information", description = "Operations related to game information management.")
+@Tag(name = "game-information-controller", description = "Operations related to game information management.")
 public class GameInformationController {
 
     private final ModelMapper modelMapper;
