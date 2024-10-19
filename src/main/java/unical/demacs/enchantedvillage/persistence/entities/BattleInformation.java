@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import unical.demacs.enchantedvillage.battle.BattleData;
+import unical.demacs.enchantedvillage.buildings.converter.BuildingDataConverter;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -37,8 +39,10 @@ public class BattleInformation {
         @Column(name="percentage_destroyed", nullable = false)
         private int percentageDestroyed;
 
-        @Column(name="battle_data", nullable = false) //todo: capire come gestire il campo
-        private String battleData;
+        @Lob
+        @Column(name="battle_data", nullable = false)
+        @Convert(converter = BuildingDataConverter.class)
+        private BattleData battleData;
 
         @Column(name = "battle_date", nullable = false)
         @NotNull(message = "The battleDate cannot be null")

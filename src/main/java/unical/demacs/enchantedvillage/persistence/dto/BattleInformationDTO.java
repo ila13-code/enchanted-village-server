@@ -3,6 +3,7 @@ package unical.demacs.enchantedvillage.persistence.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.ToString;
+import unical.demacs.enchantedvillage.battle.BattleData;
 import unical.demacs.enchantedvillage.config.validators.ValidUUID;
 
 import java.time.LocalDate;
@@ -21,14 +22,14 @@ public class BattleInformationDTO {
     @NotBlank(message = "The enemy ID cannot be empty") // chi è il nemico
     private String enemyId;
 
-    @NotBlank(message = "The flag user victory cannot be empty") // true se l'utente ha vinto, false se ha perso
-    private String flgUserVictory;
+    @NotBlank(message = "The result victory cannot be empty") // true se l'utente ha vinto, false se ha perso
+    private Boolean result;
 
     @NotBlank(message="The percentage destroyed cannot be empty") // percentuale di vittoria
     private String percentageDestroyed;
 
     @NotBlank(message="The battle date cannot be empty") // dati della battaglia - truppe ed edifici distrutti con percentuale
-    private String battleData;
+    private BattleData battleData;
 
     @NotBlank(message="The battle date cannot be empty") // data della battaglia
     private LocalDate battleDate;

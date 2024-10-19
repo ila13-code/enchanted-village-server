@@ -1,10 +1,10 @@
-package unical.demacs.enchantedvillage.utils.gameobject.converter;
+package unical.demacs.enchantedvillage.buildings.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import unical.demacs.enchantedvillage.utils.gameobject.BuildingData;
+import unical.demacs.enchantedvillage.buildings.BuildingData;
 
 @Converter(autoApply = true)
 public class BuildingDataConverter implements AttributeConverter<BuildingData, String> {

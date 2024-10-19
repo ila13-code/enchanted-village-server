@@ -1,4 +1,4 @@
-package unical.demacs.enchantedvillage.utils.gameobject;
+package unical.demacs.enchantedvillage.buildings;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +17,10 @@ public class BuildingData {
     private int x;
     private int y;
     private List<TroopsData> troopsData;
-
+    private int health;
+    private boolean isDefensive;
+    private int attackRange;
+    private int attackDamage;
 
     @Override
     public String toString() {
@@ -27,6 +30,10 @@ public class BuildingData {
                 ", x=" + x +
                 ", y=" + y +
                 ", troopsData=" + troopsData +
+                ", health=" + health +
+                ", isDefensive=" + isDefensive +
+                ", attackRange=" + attackRange +
+                ", attackDamage=" + attackDamage +
                 '}';
     }
 
@@ -40,6 +47,10 @@ public class BuildingData {
         if (prefabIndex != that.prefabIndex) return false;
         if (x != that.x) return false;
         if (y != that.y) return false;
+        if (health != that.health) return false;
+        if (isDefensive != that.isDefensive) return false;
+        if (attackRange != that.attackRange) return false;
+        if (attackDamage != that.attackDamage) return false;
         if (uniqueId != null ? !uniqueId.equals(that.uniqueId) : that.uniqueId != null) return false;
         return troopsData != null ? troopsData.equals(that.troopsData) : that.troopsData == null;
     }
@@ -51,6 +62,10 @@ public class BuildingData {
         result = 31 * result + x;
         result = 31 * result + y;
         result = 31 * result + (troopsData != null ? troopsData.hashCode() : 0);
+        result = 31 * result + health;
+        result = 31 * result + (isDefensive ? 1 : 0);
+        result = 31 * result + attackRange;
+        result = 31 * result + attackDamage;
         return result;
     }
 

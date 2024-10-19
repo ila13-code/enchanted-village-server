@@ -1,4 +1,4 @@
-package unical.demacs.enchantedvillage.utils.gameobject;
+package unical.demacs.enchantedvillage.buildings;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,7 @@ public class TroopsData {
     private int x;
     private int y;
     private int z;
-    private int type;
+    private TroopsType type;
 
     @Override
     public String toString() {
@@ -43,7 +43,7 @@ public class TroopsData {
         int result = x;
         result = 31 * result + y;
         result = 31 * result + z;
-        result = 31 * result + type;
+        result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
 

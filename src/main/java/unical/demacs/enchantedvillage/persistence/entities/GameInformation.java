@@ -5,10 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import unical.demacs.enchantedvillage.utils.gameobject.BuildingData;
-import unical.demacs.enchantedvillage.utils.gameobject.converter.BuildingDataConverter;
+import unical.demacs.enchantedvillage.buildings.BuildingData;
+import unical.demacs.enchantedvillage.buildings.converter.BuildingDataConverter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -46,7 +47,7 @@ public class GameInformation {
     @Lob
     @Column(name = "building_data", nullable = false)
     @Convert(converter = BuildingDataConverter.class)
-    private BuildingData buildingData;
+    private List<BuildingData> buildingData;
 
     @Column(name = "level", nullable = false)
     private int level;

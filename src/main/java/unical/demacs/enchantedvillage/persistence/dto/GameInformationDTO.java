@@ -3,12 +3,11 @@ package unical.demacs.enchantedvillage.persistence.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.ToString;
-import org.springframework.cglib.core.Local;
 import unical.demacs.enchantedvillage.config.validators.ValidUUID;
-import unical.demacs.enchantedvillage.utils.gameobject.BuildingData;
+import unical.demacs.enchantedvillage.buildings.BuildingData;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -26,7 +25,7 @@ public class GameInformationDTO {
     private LocalDate lastUpdateDate;
 
     @NotBlank(message = "The buildingData cannot be empty")
-    private BuildingData buildingData;
+    private List<BuildingData> buildingData;
 
     @NotBlank(message = "The elixir cannot be empty")
     private int elixir;

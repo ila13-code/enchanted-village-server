@@ -2,17 +2,16 @@ package unical.demacs.enchantedvillage.persistence.service.interfaces;
 
 import jakarta.transaction.Transactional;
 import unical.demacs.enchantedvillage.persistence.dto.BattleInformationDTO;
+import unical.demacs.enchantedvillage.persistence.entities.BattleInformation;
+
+import java.util.Optional;
 
 public interface IBattleInformationService {
     @Transactional
-    void createBattleInformation(String email, BattleInformationDTO battleInformationDTO);
-    @Transactional
-    void updateBattleInformation(String userEmail, BattleInformationDTO battleInformationDTO);
+    Optional<BattleInformation> createBattleInformation(String email, BattleInformationDTO battleInformationDTO);
 
-    void getBattleInformationByUserEmail(String userEmail);
+    Optional<BattleInformation>  getBattleInformationByUserEmail(String userEmail);
 
-    void getBattleInformationByEnemyEmail(String enemyEmail);
+    Optional<BattleInformation>  getBattleInformationByEnemyEmail(String enemyEmail);
 
-    @Transactional
-    void deleteBattleInformation(String userEmail);
 }
