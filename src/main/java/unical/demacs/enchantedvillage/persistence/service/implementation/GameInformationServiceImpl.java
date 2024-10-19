@@ -29,7 +29,6 @@ public class GameInformationServiceImpl implements IGameInformationService {
 
     private final UserRepository userRepository;
     private final GameInformationRepository gameInformationRepository;
-    private final ModelMapper modelMapper;
     private final RateLimiter rateLimiter;
 
     @Transactional

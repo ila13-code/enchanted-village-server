@@ -31,20 +31,20 @@ public class UserServiceImpl implements IUserService {
 
     @Transactional
     @Override
-    public UserDTO createUser(String id, String name, String surname, String email, String role, String username) {
+    public User createUser(String id, String name, String surname, String email, String role, String username) {
         logger.info("++++++START REQUEST++++++");
         logger.info("Attempting to create user with email: {}", email);
         try {
             User user = userRepository.findById(id).orElse(null);
             if (user != null) {
                 logger.info("User with id {} already exists", id);
-                return modelMapper.map(user, UserDTO.class);
+                return user;
             } else {
                 user = new User(id, name, surname, email, Role.valueOf(role), username);
                 userRepository.save(user);
                 //emailService.sendEmailRegistration(email, name);
                 logger.info("User created successfully: {}", email);
-                return modelMapper.map(user, UserDTO.class);
+                return user;
             }
         } finally {
             logger.info("++++++END REQUEST++++++");
@@ -104,7 +104,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Page<UserDTO> getAllUsers(int page, int size) {
+    public Page<User> getAllUsers(int page, int size) {
         logger.info("++++++START REQUEST++++++");
         logger.info("Attempting to get all users. Page: {}, Size: {}", page, size);
         try {
@@ -116,7 +116,7 @@ public class UserServiceImpl implements IUserService {
             Pageable pageable = PageRequest.of(page, size);
             Page<User> usersPage = userRepository.findAllByRole(Role.USER, pageable);
             logger.info("Users found: {}", usersPage.getTotalElements());
-            return usersPage.map(user -> modelMapper.map(user, UserDTO.class));
+            return usersPage;
         } finally {
             logger.info("++++++END REQUEST++++++");
         }
