@@ -1,0 +1,30 @@
+version: '3.8'
+name: enchanted-village
+
+services:
+  keycloak:
+    image: ila13/enchanted-village-keycloak:v.2.0
+    container_name: ev_keycloak
+    environment:
+      KEYCLOAK_USER: ${KEYCLOAK_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KEYCLOAK_PORT: ${KEYCLOAK_PORT}
+    ports:
+      - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"
+    volumes:
+      - ./docker-keycloak/keycloak_data_backup:/opt/keycloak/data
+      - ./docker-keycloak/keycloak_config_backup:/opt/keycloak/conf
+
+  ev-db:
+    image: ila13/enchanted-village-db:v.1.0
+    container_name: ev-db
+    environment:
+      POSTGRES_DB: enchanted-village
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker-db/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+      - ./docker-db/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+   

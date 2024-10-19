@@ -61,8 +61,8 @@ public class TokenValidatorService {
         }
         else {
             Map<String, Object> resourceAccess = (Map<String, Object>) jsonJWT.get("resource_access");
-            Map<String, Object> kittifyWeb = (Map<String, Object>) resourceAccess.get("enchanted-village");
-            List<String> roles = (List<String>) kittifyWeb.get("roles");
+            Map<String, Object> ev = (Map<String, Object>) resourceAccess.get("enchanted-village");
+            List<String> roles = (List<String>) ev.get("roles");
             String role = roles.get(0);
             logger.info("Token valid. User: " + jsonJWT.get("sub") + " Role: " + role);
             String userId = (String) jsonJWT.get("sub");

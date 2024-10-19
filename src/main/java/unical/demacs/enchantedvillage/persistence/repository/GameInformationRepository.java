@@ -11,6 +11,6 @@ import java.util.UUID;
 @Repository
 public interface GameInformationRepository extends JpaRepository<GameInformation, UUID> {
     Optional<GameInformation> findByUserId(String userId);
-    Optional<GameInformation> findByUserIdAndGameId(String userId, UUID gameId);
+    //Optional<GameInformation> findByUserIdAndGameId(String userId, UUID gameId);
 
 }

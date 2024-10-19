@@ -24,11 +24,11 @@ public class BattleInformation {
         private UUID id;
 
         @OneToOne(fetch = FetchType.LAZY)
-        @Column(name = "fk_user", nullable = false)
+        @JoinColumn(name = "fk_user", nullable = false)
         private User user;
 
         @OneToOne(fetch = FetchType.LAZY)
-        @Column(name = "fk_enemy", nullable = false)
+        @JoinColumn(name = "fk_enemy", nullable = false)
         private User enemy;
 
         @Column(name = "result", nullable = false)

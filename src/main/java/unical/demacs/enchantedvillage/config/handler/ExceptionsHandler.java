@@ -17,12 +17,12 @@ import java.util.ResourceBundle;
 @ControllerAdvice
 public class ExceptionsHandler {
 
-    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("LAN_it");
+    //private final ResourceBundle resourceBundle = ResourceBundle.getBundle("LAN_it");
 
     @ExceptionHandler(TooManyRequestsException.class)
     private ResponseEntity<?> handleTooManyRequests() {
         return new ResponseEntity<>(new JSONObject(
-                Map.of("message", resourceBundle.getString("TooManyRequestEx"))).toString(), HttpStatus.TOO_MANY_REQUESTS);
+                Map.of("message", "TooManyRequestEx")).toString(), HttpStatus.TOO_MANY_REQUESTS);
     }
 
 

@@ -27,7 +27,7 @@ public class GameInformation {
     private UUID id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @Column(name = "fk_user", nullable = false)
+    @JoinColumn(name = "fk_user", nullable = false)
     private User user;
 
     @Column
@@ -44,7 +44,7 @@ public class GameInformation {
 
 
     @Lob
-    @Column(name = "building_data", nullable = false, columnDefinition = "CLOB")
+    @Column(name = "building_data", nullable = false)
     @Convert(converter = BuildingDataConverter.class)
     private BuildingData buildingData;
 

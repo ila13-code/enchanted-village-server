@@ -50,3 +50,5 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
 
     }
 }
+
+

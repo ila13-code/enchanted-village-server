@@ -1,13 +1,17 @@
 package unical.demacs.enchantedvillage.persistence.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import unical.demacs.enchantedvillage.utils.Role;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users") // Changed from "user" as it might be a reserved keyword in some databases
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,22 +20,35 @@ import java.util.Objects;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column
+    @NotBlank(message = "Name cannot be blank")
+    @Column(nullable = false)
     private String name;
 
-    @Column
+    @NotBlank(message = "Surname cannot be blank")
+    @Column(nullable = false)
     private String surname;
 
-    @Column
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email should be valid")
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column
+    @NotNull(message = "Role cannot be null")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
-    @Column
+    @NotBlank(message = "Username cannot be blank")
+    @Column(nullable = false, unique = true)
     private String username;
+
+    // You might want to add a password field if it's not handled elsewhere
+    // @NotBlank(message = "Password cannot be blank")
+    // @Column(nullable = false)
+    // private String password;
 
     @Override
     public String toString() {
@@ -40,8 +57,8 @@ public class User {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
-                ", role=" + role + '\'' +
-                ", username=" + username +
+                ", role=" + role +
+                ", username='" + username + '\'' +
                 '}';
     }
 

@@ -11,5 +11,5 @@ public interface BattleInformationRepository  extends JpaRepository<BattleInform
     BattleInformation findByUserId(String userId);
     BattleInformation findByEnemyId(String enemyId);
 
-    BattleInformation updateBattleInformationById(UUID id, BattleInformation battleInformation);
+    //BattleInformation updateBattleInformationById(UUID id, BattleInformation battleInformation);
 }

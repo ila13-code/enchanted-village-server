@@ -20,7 +20,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
 import java.util.Optional;
-
 @Component
 public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
 

@@ -33,4 +33,5 @@ public class UserDTO {
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Username can only contain letters and numbers")
     private String username;
 
+
 }
