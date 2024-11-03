@@ -75,10 +75,11 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
                     });
 
             validateLevels(gameInformationUser, gameInformationEnemy);
-
             List<TroopsType> userTroops = gameInformationUser.getBuildingData().stream()
-                    .flatMap(building -> building.getTroopsData().stream())
-                    .map(troopsData -> troopsData.getType())
+                    .flatMap(building -> Optional.ofNullable(building.getTroopsData())
+                            .stream()
+                            .flatMap(Collection::stream))
+                    .map(troopsData -> TroopsType.values()[troopsData.getType()])
                     .collect(Collectors.toList());
 
             BattleData battleData = battleInformationDTO.getBattleData();

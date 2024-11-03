@@ -1,5 +1,6 @@
 package unical.demacs.enchantedvillage.buildings;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,10 +11,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TroopsData {
+    @JsonProperty("_x")
     private int x;
+
+    @JsonProperty("_y")
     private int y;
+
+    @JsonProperty("_z")
     private int z;
-    private TroopsType type;
+
+    @JsonProperty("type")
+    private int type;
 
     @Override
     public String toString() {
@@ -43,7 +51,7 @@ public class TroopsData {
         int result = x;
         result = 31 * result + y;
         result = 31 * result + z;
-        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + type;
         return result;
     }
 

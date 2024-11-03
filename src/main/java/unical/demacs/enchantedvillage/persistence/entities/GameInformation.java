@@ -8,7 +8,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import unical.demacs.enchantedvillage.buildings.BuildingData;
 import unical.demacs.enchantedvillage.buildings.converter.BuildingDataConverter;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -43,9 +45,7 @@ public class GameInformation {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate lastUpdateDate;
 
-
-    @Lob
-    @Column(name = "building_data", nullable = false)
+    @Column(name = "building_data", columnDefinition = "TEXT")
     @Convert(converter = BuildingDataConverter.class)
     private List<BuildingData> buildingData;
 
@@ -60,6 +60,20 @@ public class GameInformation {
 
     @Column(name = "experience", nullable = false)
     private int experience;
+
+    @Version
+    @Column(name = "version")
+    private Long version = 0L;
+
+    @Column(name = "last_sync_timestamp")
+    private LocalDateTime lastSyncTimestamp;
+
+
+    public boolean needsSync(Duration maxSyncInterval) {
+        if (lastSyncTimestamp == null) return true;
+        return LocalDateTime.now().minus(maxSyncInterval).isAfter(lastSyncTimestamp);
+    }
+
 
     @Override
     public String toString() {

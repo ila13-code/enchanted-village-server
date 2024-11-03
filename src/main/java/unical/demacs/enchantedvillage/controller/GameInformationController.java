@@ -16,7 +16,6 @@ import unical.demacs.enchantedvillage.persistence.service.implementation.GameInf
 
 @RestController
 @RequestMapping(value = "/api/v1/game-information", produces = "application/json")
-@CrossOrigin
 @AllArgsConstructor
 @Tag(name = "game-information-controller", description = "Operations related to game information management.")
 public class GameInformationController {
@@ -35,8 +34,8 @@ public class GameInformationController {
             @ApiResponse(responseCode = "500", description = "Server error. Please try again later.",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
-    @GetMapping(path="/getGameInformation/{email}")
-    public ResponseEntity<GameInformationDTO> getGameInformation(@PathVariable("email") String email) {
+    @GetMapping(path="/getGameInformation")
+    public ResponseEntity<GameInformationDTO> getGameInformation(@RequestParam("email") String email) {
         return ResponseEntity.ok(modelMapper.map(gameInformationServiceImpl.getGameInformation(email), GameInformationDTO.class));
     }
 
@@ -50,8 +49,8 @@ public class GameInformationController {
             @ApiResponse(responseCode = "500", description = "Server error. Please try again later.",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
-    @PostMapping(path="/createGameInformation/{email}")
-    public ResponseEntity<GameInformationDTO> createGameInformation(@PathVariable("email") String email, @RequestBody GameInformationDTO gameInformationDTO) {
+    @PostMapping(path="/createGameInformation")
+    public ResponseEntity<GameInformationDTO> createGameInformation(@RequestParam("email") String email, @RequestBody GameInformationDTO gameInformationDTO) {
         return ResponseEntity.ok(modelMapper.map(gameInformationServiceImpl.createGameInformation(email, gameInformationDTO), GameInformationDTO.class));
     }
 

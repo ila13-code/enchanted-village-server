@@ -45,7 +45,6 @@ public class SecurityFilterConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/battle-information/createBattleInformation").hasRole("USER")
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/battle-information/updateBattleInformation").hasAnyRole("USER", "ADMIN")
 
-
                         //SWAGGER
                         .requestMatchers( "/enchanted-village/swagger-ui/**", "/v3/api-docs", "/swagger-ui/**", "/enchanted-village/api-docs", "/v3/api-docs/swagger-config").permitAll()
 
