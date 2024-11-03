@@ -64,8 +64,8 @@ public class GameInformationController {
             @ApiResponse(responseCode = "500", description = "Server error. Please try again later.",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
-    @PatchMapping(path="/updateGameInformation/{email}")
-    public ResponseEntity<GameInformationDTO> updateGameInformation(@PathVariable("email") String email, @RequestBody GameInformationDTO gameInformationDTO) {
+    @PatchMapping(path="/updateGameInformation")
+    public ResponseEntity<GameInformationDTO> updateGameInformation(@RequestParam("email") String email, @RequestBody GameInformationDTO gameInformationDTO) {
         return ResponseEntity.ok(modelMapper.map(gameInformationServiceImpl.updateGameInformation(email, gameInformationDTO), GameInformationDTO.class));
     }
 
@@ -79,8 +79,8 @@ public class GameInformationController {
             @ApiResponse(responseCode = "500", description = "Server error. Please try again later.",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
-    @DeleteMapping(path="/deleteGameInformation/{email}")
-    public ResponseEntity<Boolean> deleteGameInformation(@PathVariable("email") String email) {
+    @DeleteMapping(path="/deleteGameInformation")
+    public ResponseEntity<Boolean> deleteGameInformation(@RequestParam("email") String email) {
         gameInformationServiceImpl.deleteGameInformation(email);
         return ResponseEntity.ok(true);
     }
