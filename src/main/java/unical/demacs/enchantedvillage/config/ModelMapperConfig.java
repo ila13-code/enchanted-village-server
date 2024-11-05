@@ -19,7 +19,7 @@ public class ModelMapperConfig {
                     GameInformationDTO destination = context.getDestination();
 
                     destination.setId(source.getId());
-                    destination.setUserId(source.getUser().getId());
+
                     destination.setCreationDate(source.getCreationDate());
                     destination.setLastUpdateDate(source.getLastUpdateDate());
                     destination.setBuildings(source.getBuildingData());

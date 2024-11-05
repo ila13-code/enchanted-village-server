@@ -17,8 +17,6 @@ public class GameInformationDTO {
     @ValidUUID
     private UUID id;
 
-    private String userId;
-
     private LocalDate creationDate;
 
     private LocalDate lastUpdateDate;
