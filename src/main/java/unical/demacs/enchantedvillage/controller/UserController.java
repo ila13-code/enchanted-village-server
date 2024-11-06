@@ -37,7 +37,7 @@ public class UserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
     @GetMapping(path="/getUser/{email}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and email.equals(authentication.principal.username))")
+    //@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and email.equals(authentication.principal.username))")
     public ResponseEntity<UserDTO> getUser(@PathVariable("email") String email) {
         return ResponseEntity.ok(modelMapper.map(userServiceImpl.getUserByEmail(email), UserDTO.class));
     }
@@ -76,7 +76,7 @@ public class UserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
     @GetMapping(path="/existsByEmail/{email}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and email.equals(authentication.principal.username))")
+    //@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and email.equals(authentication.principal.username))")
     public ResponseEntity<Boolean> existsByEmail(@PathVariable("email") String email) {
         return ResponseEntity.ok(userServiceImpl.existsByEmail(email));
     }
