@@ -13,5 +13,7 @@ public interface IUserService {
     @Transactional
     boolean updateUser(UserDTO userDTO);
 
+    boolean existsByEmail(String email);
+
     Page<User> getAllUsers(int page, int size);
 }

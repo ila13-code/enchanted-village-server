@@ -37,6 +37,7 @@ public class UserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
     @GetMapping(path="/getUser/{email}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and email.equals(authentication.principal.username))")
     public ResponseEntity<UserDTO> getUser(@PathVariable("email") String email) {
         return ResponseEntity.ok(modelMapper.map(userServiceImpl.getUserByEmail(email), UserDTO.class));
     }
@@ -61,5 +62,22 @@ public class UserController {
         }catch(UserException u){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
         }
+    }
+
+
+    @Operation(summary = "Exists by email", description = "Check if a user exists using their email address.",
+            tags = {"user-controller"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User exists.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))),
+            @ApiResponse(responseCode = "404", description = "User does not exist.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))),
+            @ApiResponse(responseCode = "500", description = "Server error. Please try again later.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+    })
+    @GetMapping(path="/existsByEmail/{email}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and email.equals(authentication.principal.username))")
+    public ResponseEntity<Boolean> existsByEmail(@PathVariable("email") String email) {
+        return ResponseEntity.ok(userServiceImpl.existsByEmail(email));
     }
 }

@@ -104,6 +104,24 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public boolean existsByEmail(String email) {
+        logger.info("++++++START REQUEST++++++");
+        logger.info("Attempting to check if user exists by email: {}", email);
+        try {
+            if (!rateLimiter.tryAcquire()) {
+                logger.warn("Rate limit exceeded for existsByEmail");
+                throw new TooManyRequestsException();
+            }
+
+            boolean exists = userRepository.existsByEmail(email);
+            logger.info("User exists: {}", exists);
+            return exists;
+        } finally {
+            logger.info("++++++END REQUEST++++++");
+        }
+    }
+
+    @Override
     public Page<User> getAllUsers(int page, int size) {
         logger.info("++++++START REQUEST++++++");
         logger.info("Attempting to get all users. Page: {}, Size: {}", page, size);

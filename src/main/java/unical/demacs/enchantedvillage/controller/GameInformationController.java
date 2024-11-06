@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import unical.demacs.enchantedvillage.persistence.dto.GameInformationDTO;
 import unical.demacs.enchantedvillage.persistence.dto.UserDTO;
@@ -35,6 +36,7 @@ public class GameInformationController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
     @GetMapping(path="/getGameInformation")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and email.equals(authentication.principal.username))")
     public ResponseEntity<GameInformationDTO> getGameInformation(@RequestParam("email") String email) {
         return ResponseEntity.ok(modelMapper.map(gameInformationServiceImpl.getGameInformation(email), GameInformationDTO.class));
     }
@@ -50,6 +52,7 @@ public class GameInformationController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
     @PostMapping(path="/createGameInformation")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and email.equals(authentication.principal.username))")
     public ResponseEntity<GameInformationDTO> createGameInformation(@RequestParam("email") String email, @RequestBody GameInformationDTO gameInformationDTO) {
         return ResponseEntity.ok(modelMapper.map(gameInformationServiceImpl.createGameInformation(email, gameInformationDTO), GameInformationDTO.class));
     }
@@ -65,6 +68,7 @@ public class GameInformationController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
     @PatchMapping(path="/updateGameInformation")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and email.equals(authentication.principal.username))")
     public ResponseEntity<GameInformationDTO> updateGameInformation(@RequestParam("email") String email, @RequestBody GameInformationDTO gameInformationDTO) {
         return ResponseEntity.ok(modelMapper.map(gameInformationServiceImpl.updateGameInformation(email, gameInformationDTO), GameInformationDTO.class));
     }
@@ -80,6 +84,7 @@ public class GameInformationController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
     @DeleteMapping(path="/deleteGameInformation")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and email.equals(authentication.principal.username))")
     public ResponseEntity<Boolean> deleteGameInformation(@RequestParam("email") String email) {
         gameInformationServiceImpl.deleteGameInformation(email);
         return ResponseEntity.ok(true);
