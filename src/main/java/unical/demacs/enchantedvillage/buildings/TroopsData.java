@@ -12,15 +12,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TroopsData {
     @JsonProperty("_x")
-    private int x;
+    private float x;
 
     @JsonProperty("_y")
-    private int y;
+    private float y;
 
     @JsonProperty("_z")
-    private int z;
+    private float z;
 
-    @JsonProperty("type")
+    @JsonProperty("_type")
     private int type;
 
     @Override
@@ -48,9 +48,9 @@ public class TroopsData {
 
     @Override
     public int hashCode() {
-        int result = x;
-        result = 31 * result + y;
-        result = 31 * result + z;
+        int result = (int) x;
+        result = (int) (31 * result + y);
+        result = (int) (31 * result + z);
         result = 31 * result + type;
         return result;
     }

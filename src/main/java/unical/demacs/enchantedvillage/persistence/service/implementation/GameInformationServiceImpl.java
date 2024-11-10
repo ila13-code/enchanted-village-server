@@ -18,6 +18,7 @@ import unical.demacs.enchantedvillage.persistence.entities.User;
 import unical.demacs.enchantedvillage.persistence.repository.GameInformationRepository;
 import unical.demacs.enchantedvillage.persistence.repository.UserRepository;
 import unical.demacs.enchantedvillage.persistence.service.interfaces.IGameInformationService;
+import unical.demacs.enchantedvillage.utils.BuildingMergeValidator;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -34,6 +35,7 @@ public class GameInformationServiceImpl implements IGameInformationService {
     private final UserRepository userRepository;
     private final GameInformationRepository gameInformationRepository;
     private final RateLimiter rateLimiter;
+    private final BuildingMergeValidator buildingMergeValidator;
 
     @Override
     @Transactional
@@ -122,12 +124,12 @@ public class GameInformationServiceImpl implements IGameInformationService {
     }
 
     private GameInformation updateExistingGameInformation(GameInformation existing, GameInformationDTO dto) {
-        if (!existing.needsSync(SYNC_INTERVAL)) {
+      /*  if (!existing.needsSync(SYNC_INTERVAL)) {
             log.debug("Skipping sync - within sync interval for user {}", existing.getUser().getEmail());
             return existing;
-        }
+        }*/
 
-        List<BuildingData> mergedBuildings = mergeBuildings(existing.getBuildingData(), dto.getBuildings());
+        List<BuildingData> mergedBuildings = buildingMergeValidator.validateAndMergeBuildings(existing, dto);
 
         existing.setBuildingData(mergedBuildings);
         existing.setElixir(dto.getElixir());

@@ -70,6 +70,7 @@ public class GameInformationController {
     @PatchMapping(path="/updateGameInformation")
    // @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and email.equals(authentication.principal.username))")
     public ResponseEntity<GameInformationDTO> updateGameInformation(@RequestParam("email") String email, @RequestBody GameInformationDTO gameInformationDTO) {
+
         return ResponseEntity.ok(modelMapper.map(gameInformationServiceImpl.updateGameInformation(email, gameInformationDTO), GameInformationDTO.class));
     }
 

@@ -29,4 +29,8 @@ public class BuildingData {
     private boolean defensive;
 
     private int attackRange;
+
+    public String toString() {
+        return "BuildingData(uniqueId=" + this.getUniqueId() + ", prefabIndex=" + this.getPrefabIndex() + ", x=" + this.getX() + ", y=" + this.getY() + ", troopsData=" + this.getTroopsData().toString() + ", health=" + this.getHealth() + ", attackDamage=" + this.getAttackDamage() + ", defensive=" + this.isDefensive() + ", attackRange=" + this.getAttackRange() + ")";
+    }
 }

@@ -1,7 +1,22 @@
 version: '3.8'
 name: enchanted-village
-
 services:
+  backend:
+    build:
+      context: ../
+    container_name: ev_backend
+    environment:
+      SERVER_PORT_HTTP: ${SERVER_PORT_HTTP}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    ports:
+      - "${SERVER_PORT_HTTP}:${SERVER_PORT_HTTP}"
+    depends_on:
+      - ev-db
+      - keycloak
+
   keycloak:
     image: ila13/enchanted-village-keycloak:v.2.0
     container_name: ev_keycloak
@@ -27,4 +42,3 @@ services:
     volumes:
       - ./docker-db/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
       - ./docker-db/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
-   

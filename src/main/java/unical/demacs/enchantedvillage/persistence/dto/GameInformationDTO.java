@@ -34,4 +34,8 @@ public class GameInformationDTO {
 
     @Min(0)
     private int experiencePoints;
+
+    public String toString() {
+        return "GameInformationDTO(id=" + this.getId() + ", creationDate=" + this.getCreationDate() + ", lastUpdateDate=" + this.getLastUpdateDate() + ", buildings=" + this.getBuildings().toString() + ", elixir=" + this.getElixir() + ", gold=" + this.getGold() + ", level=" + this.getLevel() + ", experiencePoints=" + this.getExperiencePoints() + ")";
+    }
 }

@@ -1,0 +1,15 @@
+version: '3.8'
+name: enchanted-village
+services:
+  backend:
+    build:
+      context: ../../
+    container_name: ev_backend
+    environment:
+      SERVER_PORT_HTTP: ${SERVER_PORT_HTTP}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    ports:
+      - "${SERVER_PORT_HTTP}:${SERVER_PORT_HTTP}"

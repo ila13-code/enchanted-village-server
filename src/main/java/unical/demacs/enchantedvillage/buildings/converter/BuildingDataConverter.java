@@ -87,7 +87,7 @@ public class BuildingDataConverter implements AttributeConverter<List<BuildingDa
             return result;
         } catch (JsonProcessingException e) {
             log.error("Error converting JSON to BuildingData list. Data: {}", dbData, e);
-            return List.of();  // Ritorna lista vuota invece di lanciare eccezione
+            return List.of();
         }
     }
 }
