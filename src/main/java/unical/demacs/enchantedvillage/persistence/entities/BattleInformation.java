@@ -36,6 +36,9 @@ public class BattleInformation {
         @Column(name = "result", nullable = false)
         private boolean result;
 
+        @Column(name="reward_exp", nullable = false)
+        private int rewardExp;
+
         @Column(name="percentage_destroyed", nullable = false)
         private int percentageDestroyed;
 
@@ -68,6 +71,7 @@ public class BattleInformation {
                     ", battleDate=" + battleDate +
                     ", elixirStolen=" + elixirStolen +
                     ", goldStolen=" + goldStolen +
+                    ",rewardExp=" + rewardExp +
                     '}';
         }
 

@@ -40,6 +40,36 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
 
 
     @Override
+    public Optional<User> getUser(String enemyEmail) {
+        logger.info("++++++START REQUEST get enemy++++++");
+        logger.info("Is enemy avaible for batle {}", enemyEmail);
+        boolean result = rateLimiter.tryAcquire();
+        if (!result) {
+            logger.warn("Too many requests, try again later.");
+            logger.info("******* END REQUEST *******");
+            throw new TooManyRequestsException();
+        }
+        try {
+            User enemy = userRepository.findByEmail(enemyEmail)
+                    .orElseThrow(() -> {
+                        logger.error("Enemy {} not found", enemyEmail);
+                        return new NoUserFoundException("Enemy not found." + enemyEmail);
+                    });
+
+            return Optional.of(enemy);
+        }
+        finally {
+            logger.info("++++++END REQUEST++++++");
+        }
+    }
+
+    @Override
+    public Optional<BattleInformation> registerResult(String userEmail, BattleInformationDTO battleInformationDTO) {
+        return Optional.empty();
+    }
+
+
+    @Override
     public Optional<BattleInformation> createBattleInformation(String userEmail, BattleInformationDTO battleInformationDTO) {
         logger.info("++++++START REQUEST createBattleInformation++++++");
         logger.info("Creating new battle information for user {}", userEmail);
@@ -175,6 +205,7 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
             logger.info("++++++END REQUEST++++++");
         }
     }
+
 
     private int calculateResourceStolen(int totalResource, int destructionPercentage) {
         return (int) (totalResource * (destructionPercentage / 100.0) * 0.75); // 75% of destroyed resources can be stolen
