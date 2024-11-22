@@ -74,7 +74,36 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
             throw new TooManyRequestsException();
         }
         try{
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> {
+                        logger.error("User {} not found", userEmail);
+                        return new NoUserFoundException("User not found." + userEmail);
+                    });
 
+            User enemy = userRepository.findByEmail(battleInformationDTO.getEnemyEmail())
+                    .orElseThrow(() -> {
+                        logger.error("Enemy {} not found", battleInformationDTO.getEnemyEmail());
+                        return new NoEnemyFoundException("Enemy not found." + battleInformationDTO.getEnemyEmail());
+                    });
+
+            boolean resultBattle=battleInformationDTO.getPercentageDestroyed()>=60;
+            BattleInformation battleInformation = BattleInformation.buildBattleInformation()
+                    .id(UUID.randomUUID())
+                    .user(user)
+                    .enemy(enemy)
+                    .result(resultBattle)
+                    .percentageDestroyed(battleInformationDTO.getPercentageDestroyed())
+                    .battleData(battleInformationDTO.getBattleData())
+                    .battleDate(LocalDate.now())
+                    .elixirStolen(battleInformationDTO.getElixirStolen())
+                    .goldStolen(battleInformationDTO.getGoldStolen())
+                    .build();
+            battleInformationRepository.save(battleInformation);
+            logger.info("BattleInformation created successfully for user {}", userEmail);
+            return Optional.of(battleInformation);
+        }
+        finally {
+            logger.info("++++++END REQUEST++++++");
         }
     }
 
@@ -96,10 +125,10 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
                         return new NoUserFoundException("User not found." + userEmail);
                     });
 
-            User enemy = userRepository.findById(battleInformationDTO.getEnemyId())
+            User enemy = userRepository.findByEmail(battleInformationDTO.getEnemyEmail())
                     .orElseThrow(() -> {
-                        logger.error("Enemy {} not found", battleInformationDTO.getEnemyId());
-                        return new NoEnemyFoundException("Enemy not found." + battleInformationDTO.getEnemyId());
+                        logger.error("Enemy {} not found", battleInformationDTO.getEnemyEmail());
+                        return new NoEnemyFoundException("Enemy not found." + battleInformationDTO.getEnemyEmail());
                     });
 
             GameInformation gameInformationUser = gameInformationRepository.findByUserId(user.getId())
@@ -110,8 +139,8 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
 
             GameInformation gameInformationEnemy = gameInformationRepository.findByUserId(enemy.getId())
                     .orElseThrow(() -> {
-                        logger.error("GameInformation for enemy {} not found", battleInformationDTO.getEnemyId());
-                        return new NoGameInformationFound("GameInformation not found." + battleInformationDTO.getEnemyId());
+                        logger.error("GameInformation for enemy {} not found", battleInformationDTO.getEnemyEmail());
+                        return new NoGameInformationFound("GameInformation not found." + battleInformationDTO.getEnemyEmail());
                     });
 
             validateLevels(gameInformationUser, gameInformationEnemy);
