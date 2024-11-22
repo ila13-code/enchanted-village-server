@@ -4,9 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.ToString;
 import unical.demacs.enchantedvillage.battle.BattleData;
+import unical.demacs.enchantedvillage.battle.BattleDestroyed;
 import unical.demacs.enchantedvillage.config.validators.ValidUUID;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -33,6 +35,8 @@ public class BattleInformationDTO {
 
     //@NotBlank(message="The battle date cannot be empty") // dati della battaglia - truppe ed edifici distrutti con percentuale
     private BattleData battleData;
+
+    private List<BattleDestroyed> battleDestroyeds;
 
     //@NotBlank(message="The battle date cannot be empty") // data della battaglia
     private LocalDate battleDate;
