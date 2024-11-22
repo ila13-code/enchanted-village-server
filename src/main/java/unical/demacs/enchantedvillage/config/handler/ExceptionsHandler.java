@@ -8,10 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import unical.demacs.enchantedvillage.config.handler.exception.InvalidBuildingDataException;
-import unical.demacs.enchantedvillage.config.handler.exception.NoGameInformationFound;
-import unical.demacs.enchantedvillage.config.handler.exception.TooManyRequestsException;
-import unical.demacs.enchantedvillage.config.handler.exception.UserException;
+import unical.demacs.enchantedvillage.config.handler.exception.*;
 
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -68,5 +65,11 @@ public class ExceptionsHandler {
     private ResponseEntity<?> handleInvalidBuildingDataException() {
         return new ResponseEntity<>(new JSONObject(
                 Map.of("message", "Invalid building data")).toString(), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(EnemyNotAvaibleException.class)
+    private ResponseEntity<?> handleEnemyNotAvaibleException() {
+        return new ResponseEntity<>(new JSONObject(
+                Map.of("message", "Enemy not Avaible")).toString(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

@@ -35,15 +35,15 @@ public class SecurityFilterConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/user/updateUser").hasAnyRole("USER","ADMIN")
 
                         //GAME INFORMATION
-                        .requestMatchers(HttpMethod.GET, "/api/v1/game-information/getGameInformation").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/game-information/createGameInformation").hasRole("USER")
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/game-information/updateGameInformation").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/game-information/getGameInformation").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/game-information").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/game-information").hasRole("USER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/game-information").hasAnyRole("USER", "ADMIN")
 
                         //BATTLE INFORMATION
-                        .requestMatchers(HttpMethod.GET, "/api/v1/battle-information/getBattleInformation").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/battle-information/avaible").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/v1/battle-information/createBattleInformation").hasRole("USER")
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/battle-information/updateBattleInformation").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/battle-information").hasAnyRole("USER", "ADMIN")
 
                         //SWAGGER
                         .requestMatchers( "/enchanted-village/swagger-ui/**", "/v3/api-docs", "/swagger-ui/**", "/enchanted-village/api-docs", "/v3/api-docs/swagger-config").permitAll()

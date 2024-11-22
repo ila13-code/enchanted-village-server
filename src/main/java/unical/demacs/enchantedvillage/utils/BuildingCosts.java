@@ -15,7 +15,9 @@ public enum BuildingCosts {
     ELIXIR_STORAGE(9, 100, 0),   // ItemType.elisirStorage
     ELIXIR_COLLECTOR(10, 100, 0),// ItemType.elisirCollector
     GOLD_STORAGE(11, 100, 0),    // ItemType.goldStorage
-    GOLD_COLLECTOR(12, 100, 0);  // ItemType.goldCollector
+    GOLD_COLLECTOR(12, 100, 0), // ItemType.goldCollector
+
+    TOWN_CENTER(13, 0, 0);    // ItemType.townCenter
 
     private final int prefabIndex;
     private final int goldCost;

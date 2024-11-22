@@ -72,8 +72,6 @@ public class BuildingMergeValidator {
             return serverState.getBuildingData();
         }
 
-
-
         List<BuildingData> mergedBuildings = new ArrayList<>();
 
         for (BuildingData serverBuilding : serverState.getBuildingData()) {

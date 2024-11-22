@@ -24,7 +24,6 @@ public class GameInformationController {
     private final ModelMapper modelMapper;
     private final GameInformationServiceImpl gameInformationServiceImpl;
 
-
     @Operation(summary = "Get game information by user email", description = "Retrieve a user's game information using their email address.",
             tags = {"game-information-controller"})
     @ApiResponses({

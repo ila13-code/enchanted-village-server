@@ -65,7 +65,17 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
 
     @Override
     public Optional<BattleInformation> registerResult(String userEmail, BattleInformationDTO battleInformationDTO) {
-        return Optional.empty();
+        logger.info("++++++START REQUEST registerBattleResulInformation++++++");
+        logger.info("Creating register battle result for user {}", userEmail);
+        boolean result = rateLimiter.tryAcquire();
+        if(!result){
+            logger.warn("Too many requests, try again later.");
+            logger.info("******* END REQUEST *******");
+            throw new TooManyRequestsException();
+        }
+        try{
+
+        }
     }
 
 

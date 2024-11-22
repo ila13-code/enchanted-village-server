@@ -22,6 +22,7 @@ public class BuildingData {
     @JsonProperty("_troopsData")
     private List<TroopsData> troopsData;
 
+    @JsonProperty("_health")
     private int health;
 
     private int attackDamage;
