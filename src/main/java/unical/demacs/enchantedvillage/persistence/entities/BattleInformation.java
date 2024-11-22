@@ -25,11 +25,11 @@ public class BattleInformation {
         @NotNull(message = "The id cannot be null")
         private UUID id;
 
-        @OneToOne(fetch = FetchType.LAZY)
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "fk_user", nullable = false)
         private User user;
 
-        @OneToOne(fetch = FetchType.LAZY)
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "fk_enemy", nullable = false)
         private User enemy;
 
