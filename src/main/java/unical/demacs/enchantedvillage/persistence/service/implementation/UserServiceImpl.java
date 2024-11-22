@@ -40,7 +40,7 @@ public class UserServiceImpl implements IUserService {
                 logger.info("User with id {} already exists", id);
                 return user;
             } else {
-                user = new User(id, name, surname, email, Role.valueOf(role), username);
+                user = new User(id, name, surname, email, Role.valueOf(role), username, null);
                 userRepository.save(user);
                 //emailService.sendEmailRegistration(email, name);
                 logger.info("User created successfully: {}", email);

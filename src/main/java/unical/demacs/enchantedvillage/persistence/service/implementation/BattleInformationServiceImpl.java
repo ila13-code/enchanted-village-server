@@ -1,7 +1,9 @@
 package unical.demacs.enchantedvillage.persistence.service.implementation;
 
 import com.google.common.util.concurrent.RateLimiter;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -63,6 +65,7 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
         }
     }
 
+    @Transactional
     @Override
     public Optional<BattleInformation> registerResult(String userEmail, BattleInformationDTO battleInformationDTO) {
         logger.info("++++++START REQUEST registerBattleResulInformation++++++");
@@ -75,10 +78,16 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
         }
         try{
             User user = userRepository.findByEmail(userEmail)
+                    .map(u -> {
+                        // Forza il caricamento di gameInformation
+                        Hibernate.initialize(u.getGameInformation());
+                        return u;
+                    })
                     .orElseThrow(() -> {
                         logger.error("User {} not found", userEmail);
                         return new NoUserFoundException("User not found." + userEmail);
                     });
+
 
             User enemy = userRepository.findByEmail(battleInformationDTO.getEnemyEmail())
                     .orElseThrow(() -> {
@@ -100,6 +109,14 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
                     .build();
             battleInformationRepository.save(battleInformation);
             logger.info("BattleInformation created successfully for user {}", userEmail);
+            gameInformationRepository.findByUserId(user.getId())
+                    .map(gameInformation -> {
+                        gameInformation.setExperience(gameInformation.getExperience()+battleInformationDTO.getRewardExp());
+                        gameInformation.setGold(gameInformation.getGold()+battleInformationDTO.getGoldStolen());
+                        gameInformation.setElixir(gameInformation.getElixir()+battleInformationDTO.getElixirStolen());
+                        gameInformationRepository.save(gameInformation);
+                        return gameInformation;
+                    });
             return Optional.of(battleInformation);
         }
         finally {

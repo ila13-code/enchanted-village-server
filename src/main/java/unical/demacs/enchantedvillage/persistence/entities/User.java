@@ -44,6 +44,10 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @JoinColumn(name = "fk_game_information")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private GameInformation gameInformation;
+
     // You might want to add a password field if it's not handled elsewhere
     // @NotBlank(message = "Password cannot be blank")
     // @Column(nullable = false)

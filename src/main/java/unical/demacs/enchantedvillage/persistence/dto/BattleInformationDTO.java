@@ -25,6 +25,9 @@ public class BattleInformationDTO {
     //@NotBlank(message = "The result victory cannot be empty") // true se l'utente ha vinto, false se ha perso
     private Boolean result;
 
+    //@NotBlank(message = "The reward experience cannot be empty") // esperienza guadagnata
+    private int rewardExp;
+
     @NotBlank(message="The percentage destroyed cannot be empty") // percentuale di vittoria
     private int percentageDestroyed;
 
