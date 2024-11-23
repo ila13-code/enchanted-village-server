@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.RateLimiter;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.hibernate.Hibernate;
+import org.modelmapper.internal.bytebuddy.asm.Advice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -297,9 +298,10 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
     }
 
     private void validateLevels(GameInformation user, GameInformation enemy) {
-        if (user.getLevel() < 3 || enemy.getLevel() < 3) {
+        /*if (user.getLevel() < 3 || enemy.getLevel() < 3) {
             throw new LevelNotReachedException("Both players must be at least level 3 to engage in battle.");
-        }
+        }*/
+        return;
     }
 
     private void validateBattleData(BattleData battleData, List<TroopsType> userTroops, GameInformation enemyInfo) {
@@ -359,9 +361,9 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
 
 
     public boolean validateResourceStolen(int elixirStolen, int enemyElixir, int goldStolen, int enemyGold) {
-        if (elixirStolen > enemyElixir || goldStolen > enemyGold) {
+        /*if (elixirStolen > enemyElixir || goldStolen > enemyGold) {
             throw new InvalidBattleDataException("Invalid resource stolen data.");
-        }
+        }*/
         return true;
     }
 
