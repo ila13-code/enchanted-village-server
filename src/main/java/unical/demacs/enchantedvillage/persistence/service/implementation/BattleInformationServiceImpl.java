@@ -7,10 +7,7 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import unical.demacs.enchantedvillage.battle.BattleData;
-import unical.demacs.enchantedvillage.battle.BattleSimulationResult;
-import unical.demacs.enchantedvillage.battle.BattleSimulator;
-import unical.demacs.enchantedvillage.battle.TroopPlacement;
+import unical.demacs.enchantedvillage.battle.*;
 import unical.demacs.enchantedvillage.config.handler.exception.*;
 import unical.demacs.enchantedvillage.persistence.dto.BattleInformationDTO;
 import unical.demacs.enchantedvillage.persistence.entities.BattleInformation;
@@ -65,66 +62,98 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
         }
     }
 
+
+
+
     @Transactional
     @Override
     public Optional<BattleInformation> registerResult(String userEmail, BattleInformationDTO battleInformationDTO) {
         logger.info("++++++START REQUEST registerBattleResulInformation++++++");
         logger.info("Creating register battle result for user {}", userEmail);
-        boolean result = rateLimiter.tryAcquire();
-        if(!result){
+
+        if (!rateLimiter.tryAcquire()) {
             logger.warn("Too many requests, try again later.");
             logger.info("******* END REQUEST *******");
             throw new TooManyRequestsException();
         }
-        try{
+
+        try {
             User user = userRepository.findByEmail(userEmail)
                     .map(u -> {
-                        // Forza il caricamento di gameInformation
                         Hibernate.initialize(u.getGameInformation());
                         return u;
                     })
                     .orElseThrow(() -> {
                         logger.error("User {} not found", userEmail);
-                        return new NoUserFoundException("User not found." + userEmail);
+                        return new NoUserFoundException("User not found: " + userEmail);
                     });
-
 
             User enemy = userRepository.findByEmail(battleInformationDTO.getEnemyEmail())
                     .orElseThrow(() -> {
                         logger.error("Enemy {} not found", battleInformationDTO.getEnemyEmail());
-                        return new NoEnemyFoundException("Enemy not found." + battleInformationDTO.getEnemyEmail());
+                        return new NoEnemyFoundException("Enemy not found: " + battleInformationDTO.getEnemyEmail());
                     });
 
-            boolean resultBattle=battleInformationDTO.getPercentageDestroyed()>=60;
+
+
+            List<BattleDestroyed> battleDestroyeds = Optional.ofNullable(battleInformationDTO.getBattleDestroyeds())
+                    .map(destroyeds -> destroyeds.stream()
+                            .filter(Objects::nonNull)
+                            .map(destroyed -> {
+                                BattleDestroyed bd = new BattleDestroyed();
+                                bd.setUniqueId(destroyed.getUniqueId());
+                                return bd;
+                            })
+                            .collect(Collectors.toList()))
+                    .orElse(new ArrayList<>());
+
+            GameInformation gameInformationEnemy = gameInformationRepository.findByUserId(enemy.getId())
+                    .orElseThrow(() -> new RuntimeException("Game information not found for user: " + userEmail));
+
+
+            validateLevels(user.getGameInformation(), enemy.getGameInformation());
+            validateTroops(user, battleInformationDTO.getBattleData());
+            validateDestroyedsBuilding(battleDestroyeds, gameInformationEnemy.getBuildingData());
+            validateResourceStolen(battleInformationDTO.getElixirStolen(), gameInformationEnemy.getElixir(), battleInformationDTO.getGoldStolen(), gameInformationEnemy.getGold());
+            int percentageDestroyed= calulatePercentageDestroyed(battleDestroyeds, gameInformationEnemy.getBuildingData());
+            boolean resultBattle = percentageDestroyed >= 60;
+
             BattleInformation battleInformation = BattleInformation.buildBattleInformation()
                     .id(UUID.randomUUID())
                     .user(user)
                     .enemy(enemy)
                     .result(resultBattle)
-                    .percentageDestroyed(battleInformationDTO.getPercentageDestroyed())
+                    .rewardExp(battleInformationDTO.getRewardExp())
+                    .percentageDestroyed(percentageDestroyed)
                     .battleData(battleInformationDTO.getBattleData())
+                    .battleDestroyeds(battleDestroyeds)
                     .battleDate(LocalDate.now())
                     .elixirStolen(battleInformationDTO.getElixirStolen())
                     .goldStolen(battleInformationDTO.getGoldStolen())
                     .build();
-            battleInformationRepository.save(battleInformation);
-            logger.info("BattleInformation created successfully for user {}", userEmail);
-            gameInformationRepository.findByUserId(user.getId())
-                    .map(gameInformation -> {
-                        gameInformation.setExperience(gameInformation.getExperience()+battleInformationDTO.getRewardExp());
-                        gameInformation.setGold(gameInformation.getGold()+battleInformationDTO.getGoldStolen());
-                        gameInformation.setElixir(gameInformation.getElixir()+battleInformationDTO.getElixirStolen());
-                        gameInformationRepository.save(gameInformation);
-                        return gameInformation;
-                    });
-            return Optional.of(battleInformation);
-        }
-        finally {
+
+            BattleInformation savedBattle = battleInformationRepository.saveAndFlush(battleInformation);
+
+            GameInformation gameInformation = gameInformationRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new RuntimeException("Game information not found for user: " + userEmail));
+
+            gameInformation.setExperience(gameInformation.getExperience() + battleInformationDTO.getRewardExp());
+            gameInformation.setGold(gameInformation.getGold() + battleInformationDTO.getGoldStolen());
+            gameInformation.setElixir(gameInformation.getElixir() + battleInformationDTO.getElixirStolen());
+            gameInformationRepository.save(gameInformation);
+
+            logger.info("Saved BattleInformation ID: {}", savedBattle.getId());
+            logger.info("Saved BattleDestroyeds count: {}",
+                    Optional.ofNullable(savedBattle.getBattleDestroyeds()).map(List::size).orElse(0));
+
+            return Optional.of(savedBattle);
+        } catch (Exception e) {
+            logger.error("Error while registering battle result", e);
+            throw e;
+        } finally {
             logger.info("++++++END REQUEST++++++");
         }
     }
-
-
     @Override
     public Optional<BattleInformation> createBattleInformation(String userEmail, BattleInformationDTO battleInformationDTO) {
         logger.info("++++++START REQUEST createBattleInformation++++++");
@@ -295,9 +324,52 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
         }
     }
 
+    public boolean validateTroops(User user, BattleData battleData) {
+        /*List<TroopsType> userTroops = user.getGameInformation().getBuildingData().stream()
+                .flatMap(building -> Optional.ofNullable(building.getTroopsData())
+                        .stream()
+                        .flatMap(Collection::stream))
+                .map(troopsData -> TroopsType.values()[troopsData.getType()])
+                .collect(Collectors.toList());
+
+        Map<TroopsType, Long> troopCounts = battleData.getTroopPlacements().stream()
+                .collect(Collectors.groupingBy(TroopPlacement::getTroopType, Collectors.counting()));
+
+        for (Map.Entry<TroopsType, Long> entry : troopCounts.entrySet()) {
+            long availableTroops = userTroops.stream().filter(t -> t == entry.getKey()).count();
+            if (availableTroops < entry.getValue()) {
+                throw new InvalidBattleDataException("User doesn't have enough troops of type " + entry.getKey());
+            }
+        }*/
+        return true;
+    }
+
+    public boolean validateDestroyedsBuilding(List<BattleDestroyed> battleDestroyeds, List<BuildingData> enemyBuildingData) {
+        Set<String> enemyBuildingIds = enemyBuildingData.stream()
+                .map(BuildingData::getUniqueId)
+                .collect(Collectors.toSet());
+
+        for (BuildingData destruction : enemyBuildingData) {
+            if (!enemyBuildingIds.contains(destruction.getUniqueId())) {
+                throw new InvalidBattleDataException("Invalid building ID in destruction data: " + destruction.getUniqueId());
+            }
+        }
+        return true;
+    }
 
 
+    public boolean validateResourceStolen(int elixirStolen, int enemyElixir, int goldStolen, int enemyGold) {
+        if (elixirStolen > enemyElixir || goldStolen > enemyGold) {
+            throw new InvalidBattleDataException("Invalid resource stolen data.");
+        }
+        return true;
+    }
 
+    public int calulatePercentageDestroyed(List<BattleDestroyed> battleDestroyeds, List<BuildingData> enemyBuildingData) {
+        int totalBuildings = enemyBuildingData.size();
+        int destroyedBuildings = battleDestroyeds.size();
+        return (destroyedBuildings * 100) / totalBuildings;
+    }
 }
 
 

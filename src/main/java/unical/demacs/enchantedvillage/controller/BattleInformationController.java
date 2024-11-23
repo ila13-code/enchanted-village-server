@@ -48,6 +48,6 @@ public class BattleInformationController {
 
     @PostMapping(path="/result")
     public ResponseEntity<BattleInformationDTO> registerResult(@RequestParam("userEmail") String userEmail, @RequestBody BattleInformationDTO battleInformationDTO) {
-        return ResponseEntity.ok(modelMapper.map(battleInformationServiceImpl.createBattleInformation(userEmail, battleInformationDTO).get(), BattleInformationDTO.class));
+        return ResponseEntity.ok(modelMapper.map(battleInformationServiceImpl.registerResult(userEmail, battleInformationDTO).get(), BattleInformationDTO.class));
     }
 }

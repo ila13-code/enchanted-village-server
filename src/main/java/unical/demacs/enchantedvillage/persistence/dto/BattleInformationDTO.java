@@ -1,5 +1,6 @@
 package unical.demacs.enchantedvillage.persistence.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.ToString;
@@ -36,6 +37,7 @@ public class BattleInformationDTO {
     //@NotBlank(message="The battle date cannot be empty") // dati della battaglia - truppe ed edifici distrutti con percentuale
     private BattleData battleData;
 
+    @JsonProperty("battleDestroyeds")  // Esatto nome dal JSON
     private List<BattleDestroyed> battleDestroyeds;
 
     //@NotBlank(message="The battle date cannot be empty") // data della battaglia

@@ -6,9 +6,12 @@ import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import unical.demacs.enchantedvillage.battle.BattleData;
+import unical.demacs.enchantedvillage.battle.BattleDestroyed;
+import unical.demacs.enchantedvillage.buildings.converter.BattleDestroyedsConverter;
 import unical.demacs.enchantedvillage.buildings.converter.BuildingDataConverter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -46,6 +49,10 @@ public class BattleInformation {
         @Column(name="battle_data", nullable = false)
         @Convert(converter = BuildingDataConverter.class)
         private BattleData battleData;
+
+        @Column(name="building_destroyed", columnDefinition = "TEXT")
+        @Convert(converter = BattleDestroyedsConverter.class)
+        private List<BattleDestroyed> battleDestroyeds;
 
         @Column(name = "battle_date", nullable = false)
         @NotNull(message = "The battleDate cannot be null")
