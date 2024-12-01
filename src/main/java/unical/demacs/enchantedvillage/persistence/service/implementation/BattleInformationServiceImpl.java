@@ -20,6 +20,7 @@ import unical.demacs.enchantedvillage.persistence.repository.UserRepository;
 import unical.demacs.enchantedvillage.persistence.service.interfaces.IBattleInformationService;
 import unical.demacs.enchantedvillage.buildings.TroopsType;
 import unical.demacs.enchantedvillage.buildings.BuildingData;
+import unical.demacs.enchantedvillage.utils.Resource;
 
 
 import java.time.LocalDate;
@@ -63,7 +64,35 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
         }
     }
 
+    @Override
+    public Optional<BattleInformation> getLastBattleInformation(String userEmail) {
+        logger.info("++++++START REQUEST getLastBattleInformation++++++");
+        logger.info("Get last battle information for user {}", userEmail);
+        boolean result = rateLimiter.tryAcquire();
+        if (!result) {
+            logger.warn("Too many requests, try again later.");
+            logger.info("******* END REQUEST *******");
+            throw new TooManyRequestsException();
+        }
+        try {
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> {
+                        logger.error("User {} not found", userEmail);
+                        return new NoUserFoundException("User not found." + userEmail);
+                    });
+            BattleInformation battleInformation = battleInformationRepository.findTopByUserIdOrderByBattleDateDesc(user.getId())
+                    .orElseThrow(() -> {
+                        logger.error("BattleInformation for user {} not found", userEmail);
+                        return new NoBattleInformationFoundException("BattleInformation not found." + userEmail);
+                    });
 
+            logger.info("Last BattleInformation found for user {}", userEmail);
+            return Optional.of(battleInformation);
+
+        } finally {
+            logger.info("++++++END REQUEST++++++");
+        }
+    }
 
 
     @Transactional
@@ -115,9 +144,11 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
             validateLevels(user.getGameInformation(), enemy.getGameInformation());
             validateTroops(user, battleInformationDTO.getBattleData());
             validateDestroyedsBuilding(battleDestroyeds, gameInformationEnemy.getBuildingData());
-            validateResourceStolen(battleInformationDTO.getElixirStolen(), gameInformationEnemy.getElixir(), battleInformationDTO.getGoldStolen(), gameInformationEnemy.getGold());
             int percentageDestroyed= calulatePercentageDestroyed(battleDestroyeds, gameInformationEnemy.getBuildingData());
             boolean resultBattle = percentageDestroyed >= 60;
+            int elixirStolen=calculateResourceStolen(battleDestroyeds, Resource.ELIXIR);
+            int goldStolen=calculateResourceStolen(battleDestroyeds, Resource.GOLD);
+            int expRewarded=calculateResourceStolen(battleDestroyeds, Resource.EXP);
 
             BattleInformation battleInformation = BattleInformation.buildBattleInformation()
                     .id(UUID.randomUUID())
@@ -129,8 +160,8 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
                     .battleData(battleInformationDTO.getBattleData())
                     .battleDestroyeds(battleDestroyeds)
                     .battleDate(LocalDate.now())
-                    .elixirStolen(battleInformationDTO.getElixirStolen())
-                    .goldStolen(battleInformationDTO.getGoldStolen())
+                    .elixirStolen(elixirStolen)
+                    .goldStolen(goldStolen)
                     .build();
 
             BattleInformation savedBattle = battleInformationRepository.saveAndFlush(battleInformation);
@@ -155,6 +186,11 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
             logger.info("++++++END REQUEST++++++");
         }
     }
+
+    private int calculateResourceStolen(List<BattleDestroyed> battleDestroyeds, Resource resource) {
+        return 2;
+    }
+
     @Override
     public Optional<BattleInformation> createBattleInformation(String userEmail, BattleInformationDTO battleInformationDTO) {
         logger.info("++++++START REQUEST createBattleInformation++++++");
@@ -292,6 +328,10 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
         }
     }
 
+    private int calculateResourceStolen(int totalResource, Resource resource) {
+        return (int) (totalResource * (1 / 100.0) * 0.75); // 75% of destroyed resources can be stolen
+    }
+
 
     private int calculateResourceStolen(int totalResource, int destructionPercentage) {
         return (int) (totalResource * (destructionPercentage / 100.0) * 0.75); // 75% of destroyed resources can be stolen
@@ -372,6 +412,8 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
         int destroyedBuildings = battleDestroyeds.size();
         return (destroyedBuildings * 100) / totalBuildings;
     }
+
+
 }
 
 

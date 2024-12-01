@@ -17,5 +17,7 @@ public interface IBattleInformationService {
 
     Optional<User> getUser(String enemyEmail);
 
+    Optional<BattleInformation> getLastBattleInformation(String userEmail);
+
     Optional<BattleInformation> registerResult(String userEmail, BattleInformationDTO battleInformationDTO);
 }

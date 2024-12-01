@@ -50,4 +50,9 @@ public class BattleInformationController {
     public ResponseEntity<BattleInformationDTO> registerResult(@RequestParam("userEmail") String userEmail, @RequestBody BattleInformationDTO battleInformationDTO) {
         return ResponseEntity.ok(modelMapper.map(battleInformationServiceImpl.registerResult(userEmail, battleInformationDTO).get(), BattleInformationDTO.class));
     }
+
+    @GetMapping(path="/last")
+    public ResponseEntity<BattleInformationDTO> getLastBattleInformation(@RequestParam("userEmail") String userEmail) {
+        return ResponseEntity.ok(modelMapper.map(battleInformationServiceImpl.getLastBattleInformation(userEmail).get(), BattleInformationDTO.class));
+    }
 }
