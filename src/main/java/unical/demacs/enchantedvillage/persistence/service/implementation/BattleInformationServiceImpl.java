@@ -160,8 +160,8 @@ public class BattleInformationServiceImpl implements IBattleInformationService {
                     .battleData(battleInformationDTO.getBattleData())
                     .battleDestroyeds(battleDestroyeds)
                     .battleDate(LocalDate.now())
-                    .elixirStolen(elixirStolen)
-                    .goldStolen(goldStolen)
+                    .elixirStolen(battleInformationDTO.getElixirStolen())
+                    .goldStolen(battleInformationDTO.getGoldStolen())
                     .build();
 
             BattleInformation savedBattle = battleInformationRepository.saveAndFlush(battleInformation);
